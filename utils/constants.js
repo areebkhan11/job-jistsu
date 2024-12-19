@@ -9,3 +9,19 @@ exports.STATUS_CODES = Object.freeze({
   UNPROCESSABLE_ENTITY: 422,
   INTERNAL_SERVER_ERROR: 500,
 });
+
+exports.ROLES = Object.freeze({
+  ADMIN: "admin",
+  MANAGER: "manager",
+  TEAM_LEAD: "team lead",
+  EMPLOYEE: "employee",
+});
+
+exports.ROLES_TYPE = Object.freeze({
+  INSPECTOR: "inspector",
+  DRIVER: "driver",
+  CLEANER: "cleaner",
+  TEAM_LEAD: "team lead",
+  MANAGER: "manager",
+  ADMIN: "admin",
+});
