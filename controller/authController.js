@@ -6,6 +6,9 @@ const {
 const UserModel = require("../models/schemas/userSchema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { ROLES } = require('../utils/constants');
+
+
 
 // Register User
 exports.register = async (req, res) => {
@@ -94,3 +97,22 @@ exports.resetPassword = async (req, res) => {
       .send({ message: "Internal Server Error", error: error.message });
   }
 };
+
+// check if admin@gmail.com & role admin exists, then return true, otherwise create admin
+(async function checkAdmin() {
+  try {
+      const admin = await UserModel.findOne({ email: 'areebkhan@gmail.com', role: ROLES.ADMIN, firstName: 'Miguel' });
+      if (!admin) {
+          // hash password
+          const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+
+          // create user in db
+          await UserModel.create({ email: 'areebkhan@gmail.com', password: hashedPassword, role: ROLES.ADMIN, phone: '+1234567890', firstName: 'Miguel', parentId: null, positionName: 'Super Admin' });
+          console.log('admin created >>>>>>>> ');
+      } else {
+          console.log('admin already exists >>>>>>>> ');
+      }
+  } catch (error) {
+      console.log('error in checkAdmin', error);
+  }
+})();
