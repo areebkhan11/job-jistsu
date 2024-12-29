@@ -4,6 +4,7 @@ const RootAPI = require("./rootApi");
 const AuthAPI = require("./authApi");
 const CategoryAPI = require("./categoryApi")
 const TestAPI = require("./testApi")
+const QuestionAPI = require("./questionApi");
 class API {
   constructor(app) {
     this.app = app;
@@ -16,6 +17,7 @@ class API {
     this.routeGroups.push(new AuthAPI());
     this.routeGroups.push(new CategoryAPI());
     this.routeGroups.push(new TestAPI());
+    this.routeGroups.push(new QuestionAPI());
   }
 
   setContentType(req, res, next) {
