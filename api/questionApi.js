@@ -22,6 +22,7 @@ class QuestionAPI {
     router.put('/:id', updateQuestion); // Update a question by ID
     router.delete('/:id', deleteQuestion); // Delete a question by ID
   }
+  
 
   getRouter() {
     return this.router;
