@@ -1,7 +1,17 @@
 const TestModel = require('../models/schemas/testSchema');
+const CategoryModel = require('../models/schemas/categorySchema');
 
 exports.createTest = async (req, res) => {
     try {
+        const { categoryId } = req.body;
+
+        // Check if the category exists
+        const categoryExists = await CategoryModel.findById(categoryId);
+        if (!categoryExists) {
+            return res.status(400).send({ message: 'Category not exists' });
+        }
+
+        // If category exists, proceed to create the test
         const test = new TestModel(req.body);
         await test.save();
         res.status(201).send(test);
