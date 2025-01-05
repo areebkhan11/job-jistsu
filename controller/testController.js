@@ -76,7 +76,7 @@ exports.getTestsByDifficulty = async (req, res) => {
             return res.status(400).send({ error: 'Invalid difficulty level' });
         }
 
-        const tests = await TestModel.find({ category: categoryId, difficultyLevel: difficulty });
+        const tests = await TestModel.find({ categoryId: categoryId, difficultyLevel: difficulty });
 
         res.status(200).send(tests);
     } catch (error) {
