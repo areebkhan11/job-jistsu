@@ -37,7 +37,6 @@ exports.getAllUsers = async ({ query, page, limit } = {}) => {
 // generate token
 exports.generateToken = (user) => {
   const { JWT_EXPIRATION, JWT_SECRET } = process.env;
-
   const token = sign(
     {
       id: user._id,
