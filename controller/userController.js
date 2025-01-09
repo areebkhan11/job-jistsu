@@ -122,35 +122,46 @@ exports.searchAllUsersByRole = async (req, res, next) => {
 // generate OTP
 exports.generateOTP = async (req, res, next) => {
   const body = parseBody(req.body);
-  const { phone } = body;
+  const { email } = body;
 
   // Joi validation
-  const { error } = generateOtpValidation.validate(body);
-  if (error)
-    return next({
-      statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
-      message: error.details[0].message,
-    });
+  // const { error } = generateOtpValidation.validate(body);
+  // if (error)
+  //   return next({
+  //     statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
+  //     message: error.details[0].message,
+  //   });
 
   try {
-    const user = await findUser({ phone });
-    if (!user)
-      return next({
-        statusCode: STATUS_CODES.NOT_FOUND,
-        message: "User not found",
-      });
+    // const user = await findUser({ email });
+    // if (!user)
+    //   return next({
+    //     statusCode: STATUS_CODES.NOT_FOUND,
+    //     message: "User not found",
+    //   });
 
     // delete all previous OTPs
-    await deleteOTPs(phone);
+    // await deleteOTPs(phone);
 
-    const otpObj = await addOTP({
-      phone,
-      otp: generateRandomOTP(),
-    });
+    // const otpObj = await addOTP({
+    //   phone,
+    //   otp: generateRandomOTP(),
+    // });
+
+    const otp = generateRandomOTP();
+    // Send OTP via email
+    const message = `Your OTP code is ${otp}. It is valid for 10 minutes.`;
+    await mailer.sendEmail(
+      EMAIL_TEMPLATES.RESET_PASSWORD, // Add an OTP template if necessary
+      message,
+      email,
+      email
+      // user.firstName + " " + user.lastName
+    );
 
     // twilio service for sending OTP to phone number
 
-    generateResponse({ otp: otpObj?.otp }, "OTP sent successfully", res);
+    generateResponse(null, "OTP verified successfully", res);
   } catch (error) {
     next(new Error(error.message));
   }

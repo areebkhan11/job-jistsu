@@ -16,7 +16,9 @@ exports.ROLES = Object.freeze({
   TEAM_LEAD: "team lead",
   USER: "user",
 });
-
+exports.EMAIL_TEMPLATES = Object.freeze({
+  RESET_PASSWORD: "reset-password",
+});
 exports.ROLES_TYPE = Object.freeze({
   INSPECTOR: "inspector",
   DRIVER: "driver",
