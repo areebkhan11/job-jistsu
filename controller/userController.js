@@ -37,39 +37,45 @@ const {
 exports.searchAllUsers = async (req, res, next) => {
   // Joi validation
   const { error } = requestQueryValidation.validate(req.query);
-  if (error)
+  if (error) {
     return next({
       statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
       message: error.details[0].message,
     });
+  }
 
   const user = req.user.id;
   const { firstName = "" } = req.query;
-  const page = req.query.page || 1;
-  const limit = req.query.limit || 10;
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
+
+  // Remove pagination parameters from req.query
   delete req.query.page;
   delete req.query.limit;
 
   const filters = [];
 
-  // Iterate over req.query object
-  for (const key in req.query) {
-    const filter = {};
-    filter[key] = req.query[key];
-    //regex on firstName
-    if (key === "firstName") {
-      filter[key] = { $regex: `.*${req.query[key]}.*`, $options: "i" };
+  // Build filters if query parameters exist
+  if (Object.keys(req.query).length > 0) {
+    for (const key in req.query) {
+      const filter = {};
+      filter[key] = req.query[key];
+      // Regex filter on firstName
+      if (key === "firstName") {
+        filter[key] = { $regex: `.*${req.query[key]}.*`, $options: "i" };
+      }
+      filters.push(filter);
     }
-    filters.push(filter);
   }
 
-  const query = getUsersQuery(user, filters);
+  // If no filters exist, query for all users
+  const query = filters.length > 0 ? getUsersQuery(user, filters) : {};
 
   try {
     const users = await getAllUsers({ query, page, limit });
-    if (users?.users.length === 0) {
-      generateResponse(null, "No users found", res);
-      return;
+
+    if (!users || users.users.length === 0) {
+      return generateResponse(null, "No users found", res);
     }
 
     generateResponse(users, "Users found", res);
@@ -77,6 +83,7 @@ exports.searchAllUsers = async (req, res, next) => {
     next(error);
   }
 };
+
 
 exports.searchAllUsersByRole = async (req, res, next) => {
   // Joi validation
