@@ -3,7 +3,7 @@ const ProfileModel = require('../models/schemas/profileSchema');
 exports.createProfile = async (req, res) => {
     try {
       const userId = req.user.id;
-      const profileExists = await ProfileModel.findOne({ user: userId });
+      const profileExists = await ProfileModel.findOne({ userId });
       if (profileExists) {
         return res.status(400).send({ message: 'Profile already exists for this user.' });
       }

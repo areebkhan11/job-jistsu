@@ -22,7 +22,7 @@ exports.createTest = async (req, res) => {
 
 exports.getTests = async (req, res) => {
     try {
-        const tests = await TestModel.find();
+        const tests = await TestModel.find().sort({ createdAt: -1 });;
         res.status(200).send(tests);
     } catch (error) {
         res.status(500).send(error);

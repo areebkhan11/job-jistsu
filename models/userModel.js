@@ -28,7 +28,7 @@ exports.getAllUsers = async ({ query, page, limit } = {}) => {
     query,
     page,
     limit,
-    sort: { firstName: 1 },
+    sort: { createdAt: -1 },
   });
 
   return { users: data, pagination };
@@ -44,7 +44,7 @@ exports.generateToken = (user) => {
       role: user.role,
     },
     JWT_SECRET,
-    { expiresIn: JWT_EXPIRATION }
+    { expiresIn:  Number(JWT_EXPIRATION) || "2d"  }
   );
 
   return token;

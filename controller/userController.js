@@ -72,7 +72,7 @@ exports.searchAllUsers = async (req, res, next) => {
   const query = filters.length > 0 ? getUsersQuery(user, filters) : {};
 
   try {
-    const users = await getAllUsers({ query, page, limit });
+    const users = await getAllUsers({ query, page, limit, sort: { createdAt: -1 } });
 
     if (!users || users.users.length === 0) {
       return generateResponse(null, "No users found", res);
