@@ -1,6 +1,8 @@
 const TestModel = require('../models/schemas/testSchema');
 const CategoryModel = require('../models/schemas/categorySchema');
-
+const QuestionModel = require('../models/schemas/Question');
+const Test = require('../models/schemas/testSchema');
+const Result = require('../models/schemas/testResuldSchema');
 exports.createTest = async (req, res) => {
     try {
         const { categoryId } = req.body;
@@ -82,4 +84,76 @@ exports.getTestsByDifficulty = async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
+};
+
+exports.testSubmition = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { testId, selectedAnswers } = req.body;
+    
+        // Fetch the test details
+        const test = await Test.findById(testId);
+        if (!test) {
+          return res.status(400).json({ message: "Invalid test ID." });
+        }
+    
+        // Fetch all questions for the test with the correct difficulty level
+        const questions = await QuestionModel.find({
+          testId,
+        });
+    
+        if (!questions.length) {
+          return res.status(400).json({ message: "No questions found for this test." });
+        }
+    
+        let correctCount = 0;
+        let totalScore = 0;
+    
+        const processedAnswers = selectedAnswers.map(({ questionId, selectedOption }) => {
+          const question = questions.find(q => q._id.toString() === questionId);
+    
+          if (!question) {
+            return res.status(400).json({ message: `Invalid question ID: ${questionId}` });
+          }
+    
+          const isCorrect = question.correctAnswer === selectedOption;
+          if (isCorrect) {
+            correctCount++;
+    
+            // Assign score based on difficulty level of the test
+            const scoreWeight = 
+              test.difficultyLevel === "Basic" ? 1 :
+              test.difficultyLevel === "Moderate" ? 2 :
+              3; // Advanced
+    
+            totalScore += scoreWeight;
+          }
+    
+          return { questionId, selectedOption, isCorrect };
+        });
+    
+        const totalQuestions = questions.length;
+        const isPassed = totalScore >= totalQuestions * 1.5; // Pass if the weighted score reaches the threshold
+    
+        // Save the result
+        const result = new Result({
+          userId,
+          testId,
+          difficultyLevel: test.difficultyLevel,
+          selectedAnswers: processedAnswers,
+          score: totalScore,
+          totalQuestions,
+          isPassed
+        });
+    
+        await result.save();
+    
+        res.status(201).json({
+          message: "Test submitted successfully",
+          result
+        });
+      } catch (error) {
+        console.error("Error submitting test:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+      }
 };
