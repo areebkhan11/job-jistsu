@@ -190,4 +190,60 @@ exports.getPerformedTests = async (req, res) => {
   }
 };
 
+exports.getTestResult = async (req, res) => {
+  try {
+    const userId = req.user.id; // Get user ID from authenticated request
+    const { testId } = req.params;
+
+    // Fetch the test result for the given user and test
+    const result = await Result.findOne({ userId, testId })
+      .populate("testId", "name difficultyLevel categoryId")
+      .lean();
+
+    if (!result) {
+      return res.status(404).json({ message: "Test result not found." });
+    }
+
+    // Fetch all questions for this test
+    const questions = await Question.find({ testId }).lean();
+
+    // Categorize answers
+    const correctAnswers = [];
+    const wrongAnswers = [];
+
+    result.selectedAnswers.forEach((answer) => {
+      const question = questions.find(q => q._id.toString() === answer.questionId.toString());
+
+      if (question) {
+        const isCorrect = question.correctAnswer === answer.selectedOption;
+        const answerData = {
+          questionId: question._id,
+          question: question.question,
+          selectedOption: answer.selectedOption,
+          correctAnswer: question.correctAnswer
+        };
+
+        isCorrect ? correctAnswers.push(answerData) : wrongAnswers.push(answerData);
+      }
+    });
+
+    res.status(200).json({
+      message: "Test result retrieved successfully",
+      test: {
+        testId: result.testId._id,
+        testName: result.testId.name,
+        categoryId: result.testId.categoryId,
+        difficultyLevel: result.testId.difficultyLevel,
+        totalQuestions: result.totalQuestions
+      },
+      correctAnswers,
+      wrongAnswers
+    });
+  } catch (error) {
+    console.error("Error fetching test result:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
 
