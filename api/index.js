@@ -7,6 +7,7 @@ const TestAPI = require("./testApi")
 const QuestionAPI = require("./questionApi");
 const User = require('./userApi')
 const Profile = require('./profileRoutes')
+const Resource = require('./resourcesApi')
 class API {
   constructor(app) {
     this.app = app;
@@ -22,6 +23,7 @@ class API {
     this.routeGroups.push(new QuestionAPI());
     this.routeGroups.push(new User)
     this.routeGroups.push(new Profile)
+    this.routeGroups.push(new Resource)
   }
 
   setContentType(req, res, next) {
