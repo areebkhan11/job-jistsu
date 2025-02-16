@@ -157,3 +157,37 @@ exports.testSubmition = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
       }
 };
+
+exports.getPerformedTests = async (req, res) => {
+  try {
+    const userId = req.user.id; // Get user ID from authenticated request
+    // Fetch all results for the user
+    const results = await Result.find({ userId }).populate("testId", "name difficultyLevel categoryId");
+
+    if (!results.length) {
+      return res.status(404).json({ message: "No performed tests found." });
+    }
+
+    // Format the response
+    const formattedResults = results.map(result => ({
+      testId: result.testId._id,
+      testName: result.testId.name,
+      categoryId: result.testId.categoryId,
+      difficultyLevel: result.testId.difficultyLevel,
+      totalQuestions: result.totalQuestions,
+      score: result.score,
+      isPassed: result.isPassed,
+      performedAt: result.createdAt
+    }));
+
+    res.status(200).json({
+      message: "Performed tests retrieved successfully",
+      tests: formattedResults
+    });
+  } catch (error) {
+    console.error("Error fetching performed tests:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+

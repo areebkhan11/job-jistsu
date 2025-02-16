@@ -6,7 +6,8 @@ const {
   updateTest,
   deleteTest,
   getTestsByDifficulty,
-  testSubmition
+  testSubmition,
+  getPerformedTests
 } = require('../controller/testController');
 const authMiddleware = require('../middlewares/Auth');
 const { ROLES } = require('../utils/constants');
@@ -19,7 +20,7 @@ class TestAPI {
 
   setupRoutes() {
     let router = this.router;
-
+    router.get("/performed-tests",authMiddleware(Object.values(ROLES)), getPerformedTests);
     router.post('/', createTest); // Create a new test
     router.get('/', getTests); // Get all tests
     router.get('/:id', getTestById); // Get a test by ID
@@ -27,6 +28,7 @@ class TestAPI {
     router.delete('/:id', deleteTest); // Delete a test by ID
     router.get('/category/:categoryId', getTestsByDifficulty); // Get tests by difficulty within a category
     router.post('/submit-test',authMiddleware(Object.values(ROLES)), testSubmition); // Get tests by difficulty within a category
+
   }
   
   getRouter() {

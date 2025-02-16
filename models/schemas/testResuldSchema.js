@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const resultSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  testId: { type: Schema.Types.ObjectId, ref: "AptitudeTest", required: true },
+  testId: { type: Schema.Types.ObjectId, ref: "Test", required: true },
   selectedAnswers: [
     {
       questionId: { type: Schema.Types.ObjectId, ref: "Question", required: true },
