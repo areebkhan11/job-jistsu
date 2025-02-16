@@ -205,7 +205,7 @@ exports.getTestResult = async (req, res) => {
     }
 
     // Fetch all questions for this test
-    const questions = await Question.find({ testId }).lean();
+    const questions = await QuestionModel.find({ testId }).lean();
 
     // Categorize answers
     const correctAnswers = [];
