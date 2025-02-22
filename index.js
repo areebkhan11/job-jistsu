@@ -9,11 +9,13 @@ const { log } = require('./middlewares/log');
 const { generateResponse } = require('./utils');
 require('dotenv').config();
 const PORT = process.env.PORT;
+const { io } = require('./socket');
 
 const app = express();
 DB_CONNECT();
 
 const server = http.createServer(app);
+io(server);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "30mb" }));
