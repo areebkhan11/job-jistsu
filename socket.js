@@ -17,9 +17,9 @@ exports.io = (server) => {
             // const userObj = await updateUser({ _id: senderId }, { $set: { online: true } });
 
             // Notify other users
-            socket.broadcast.emit("user-connected", userObj);
+            // socket.broadcast.emit("user-connected", userObj);
 
-            console.log(`User ${senderId} connected`);
+            // console.log(`User ${senderId} connected`);
 
             // Send past messages to the newly connected user
             const pastMessages = await ChatModel.find().sort({ createdAt: 1 });
