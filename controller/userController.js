@@ -382,35 +382,7 @@ exports.sendResetPasswordLink = async (req, res, next) => {
 };
 
 exports.uploadImage = async (req, res, next) => {
-  const { file } = req;
-  if (!file)
-    return next({
-      statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
-      message: "Image is required",
-    });
-
-  const { id } = req.user;
-
-  // concatenate image url with users/ and file name
-  const image = file.path;
-
-  try {
-    const user = await updateUser({ _id: id }, { image });
-    if (!user)
-      return next({
-        statusCode: STATUS_CODES.BAD_REQUEST,
-        message: "image not updated",
-      });
-    generateResponse(user, "Profile image updated successfully", res);
-  } catch (error) {
-    next(error);
-  }
-};
-
-
-exports.uploadImage = async (req, res, next) => {
   const { image } = req.body;
-  console.log(image, "<=====")
   const { id } = req.user;
 
   try {
