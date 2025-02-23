@@ -4,8 +4,8 @@ const RestrictionModel = require('../models/schemas/restrictionSchema'); // impo
 exports.createRestriction = async (req, res) => {
   try {
     const restriction = new RestrictionModel({
-      ...req.body,
-      image: req.files ? req.files['image'][0].path : null, // Handle file upload for image if it exists
+      ...req.body
+      // image: req.files ? req.files['image'][0].path : null, // Handle file upload for image if it exists
     });
 
     await restriction.save();
