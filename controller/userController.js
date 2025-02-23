@@ -34,6 +34,7 @@ const {
   requestQueryValidation,
   updateUserValidation,
 } = require("../validations/common");
+const { CLIENT_RENEG_LIMIT } = require('tls');
 
 // get all users (based on selected role) also included isFollowing or isFollower flag (User API)
 exports.searchAllUsers = async (req, res, next) => {
@@ -409,6 +410,7 @@ exports.uploadImage = async (req, res, next) => {
 
 exports.uploadImage = async (req, res, next) => {
   const { image } = req.body;
+  console.log(image, "<=====")
   const { id } = req.user;
 
   try {

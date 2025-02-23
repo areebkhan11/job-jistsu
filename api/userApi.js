@@ -21,7 +21,7 @@ class UserAPI {
         // Dashboard API
         router.put('/reset-password', resetPassword);
         router.put('/reset-link', sendResetPasswordLink);
-        router.put('/upload-image', authMiddleware(Object.values(ROLES)), upload('users').single('image'), uploadImage);
+        router.put('/upload-image',authMiddleware(Object.values(ROLES)), uploadImage);
         router.put('/:userId', authMiddleware([ROLES.USER]), updateSingleUser);
         router.delete('/:userId', authMiddleware(Object.values(ROLES)), deleteUser);
     }
