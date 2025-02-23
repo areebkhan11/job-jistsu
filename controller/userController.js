@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const {
   getAllUsers,
   findUser,
@@ -403,6 +405,30 @@ exports.uploadImage = async (req, res, next) => {
     next(error);
   }
 };
+
+
+exports.uploadImage = async (req, res, next) => {
+  const { image } = req.body;
+  const { id } = req.user;
+
+  try {
+
+    // Save the base64 string to the user’s profile in the database
+    const user = await updateUser({ _id: id }, { image });
+    
+    if (!user)
+      return next({
+        statusCode: STATUS_CODES.BAD_REQUEST,
+        message: "Image not updated",
+      });
+
+    // Return the updated user response
+    generateResponse(user, "Profile image updated successfully", res);
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 exports.updateSingleUser = async (req, res, next) => {
   const body = parseBody(req.body);

@@ -19,7 +19,7 @@ class ResourceAPI {
 
   setupRoutes() {
     let router = this.router;
-    router.post('/',authMiddleware(Object.values(ROLES)), upload('resources').fields([{ name: 'image', maxCount: 1 }]), createResource); // Create a new resource
+    router.post('/',authMiddleware(Object.values(ROLES)), createResource); // Create a new resource
     router.get('/',authMiddleware(Object.values(ROLES)), getResources); // Get all resources
     router.get('/:id',authMiddleware(Object.values(ROLES)), getResourceById); // Get a resource by ID
     router.put('/:id',authMiddleware(Object.values(ROLES)), updateResource); // Update a resource by ID
