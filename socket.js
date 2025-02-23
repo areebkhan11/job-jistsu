@@ -22,8 +22,11 @@ exports.io = (server) => {
             // console.log(`User ${senderId} connected`);
 
             // Send past messages to the newly connected user
-            const pastMessages = await ChatModel.find().sort({ createdAt: 1 });
-            socket.emit("pastMessages", pastMessages);
+            const pastMessages = await ChatModel.find()
+            .sort({ createdAt: 1 })
+            .populate('sender', 'firstName lastName image') 
+            socket.emit("pastMessages", pastMessages)
+           
         } catch (error) {
             console.error("Error updating user status:", error);
         }
@@ -33,7 +36,12 @@ exports.io = (server) => {
             try {
                 const newMessage = new ChatModel({ sender, message });
                 await newMessage.save();
-                io.emit("newMessage", newMessage); // Broadcast message to all users
+
+                 // Populate user details before broadcasting
+                 const populatedMessage = await ChatModel.findById(newMessage._id)
+                 .populate('sender', 'firstName lastName image')
+
+                io.emit("newMessage", populatedMessage); // Broadcast message to all users
             } catch (error) {
                 console.error("Error saving message:", error);
             }

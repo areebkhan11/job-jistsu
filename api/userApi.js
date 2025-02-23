@@ -23,7 +23,7 @@ class UserAPI {
         router.put('/reset-link', sendResetPasswordLink);
         router.put('/upload-image', authMiddleware(Object.values(ROLES)), upload('users').single('image'), uploadImage);
         router.put('/:userId', authMiddleware([ROLES.USER]), updateSingleUser);
-        router.delete('/:userId', authMiddleware([ROLES.ADMIN]), deleteUser);
+        router.delete('/:userId', authMiddleware(Object.values(ROLES)), deleteUser);
     }
 
     getRouter() {
