@@ -381,29 +381,51 @@ exports.sendResetPasswordLink = async (req, res, next) => {
   }
 };
 
+// exports.uploadImage = async (req, res, next) => {
+//   const { image } = req.body;
+//   const { id } = req.user;
+
+//   try {
+
+//     // Save the base64 string to the user’s profile in the database
+//     const user = await updateUser({ _id: id }, { image });
+    
+//     if (!user)
+//       return next({
+//         statusCode: STATUS_CODES.BAD_REQUEST,
+//         message: "Image not updated",
+//       });
+
+//     // Return the updated user response
+//     generateResponse(user, "Profile image updated successfully", res);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
 exports.uploadImage = async (req, res, next) => {
-  const { image } = req.body;
+  const { file } = req;
+  if (!file) return next({
+      statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
+      message: 'Image is required'
+  });
+
   const { id } = req.user;
 
+  // concatenate image url with users/ and file name
+  const image = file.path;
+
   try {
-
-    // Save the base64 string to the user’s profile in the database
-    const user = await updateUser({ _id: id }, { image });
-    
-    if (!user)
-      return next({
-        statusCode: STATUS_CODES.BAD_REQUEST,
-        message: "Image not updated",
+      const user = await updateUser({ _id: id }, { image });
+      if (!user) return next({
+          statusCode: STATUS_CODES.BAD_REQUEST,
+          message: 'image not updated'
       });
-
-    // Return the updated user response
-    generateResponse(user, "Profile image updated successfully", res);
+      generateResponse(user, 'Profile image updated successfully', res);
   } catch (error) {
-    next(error);
+      next(error);
   }
-};
-
-
+}
 exports.updateSingleUser = async (req, res, next) => {
   const body = parseBody(req.body);
   const { userId } = req.params;
