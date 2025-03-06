@@ -5,10 +5,8 @@ const {
 } = require("../validations/authValidation");
 const UserModel = require("../models/schemas/userSchema");
 const bcrypt = require("bcrypt");
-const { ROLES } = require('../utils/constants');
+const { ROLES } = require("../utils/constants");
 const { generateToken } = require("../models/userModel");
-
-
 
 // Register User
 exports.register = async (req, res) => {
@@ -67,7 +65,9 @@ exports.login = async (req, res) => {
 
     res.status(200).send({ message: "Login successful", token, user });
   } catch (error) {
-    res.status(500).send({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .send({ message: "Internal Server Error", error: error.message });
   }
 };
 
@@ -100,18 +100,30 @@ exports.resetPassword = async (req, res) => {
 // check if admin@gmail.com & role admin exists, then return true, otherwise create admin
 (async function checkAdmin() {
   try {
-      const admin = await UserModel.findOne({ email: 'areebkhan@gmail.com', role: ROLES.ADMIN, firstName: 'Admin' });
-      if (!admin) {
-          // hash password
-          const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+    const admin = await UserModel.findOne({
+      email: "areebkhan123123@gmail.com",
+      role: ROLES.ADMIN,
+      firstName: "Admin",
+    });
+    if (!admin) {
+      // hash password
+      const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
 
-          // create user in db
-          await UserModel.create({ email: 'areebkhan@gmail.com', password: hashedPassword, role: ROLES.ADMIN, phone: '+1234567890', firstName: 'Admin', parentId: null, positionName: 'Super Admin' });
-          console.log('admin created >>>>>>>> ');
-      } else {
-          console.log('admin already exists >>>>>>>> ');
-      }
+      // create user in db
+      await UserModel.create({
+        email: "areebkhan123123@gmail.com",
+        password: hashedPassword,
+        role: ROLES.ADMIN,
+        phone: "+1234567890",
+        firstName: "Admin",
+        parentId: null,
+        positionName: "Super Admin",
+      });
+      console.log("admin created >>>>>>>> ");
+    } else {
+      console.log("admin already exists >>>>>>>> ");
+    }
   } catch (error) {
-      console.log('error in checkAdmin', error);
+    console.log("error in checkAdmin", error);
   }
 })();

@@ -124,49 +124,21 @@ exports.generateOTP = async (req, res, next) => {
   const body = parseBody(req.body);
   const { email } = body;
 
-  // Joi validation
-  // const { error } = generateOtpValidation.validate(body);
-  // if (error)
-  //   return next({
-  //     statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
-  //     message: error.details[0].message,
-  //   });
-
   try {
-    // const user = await findUser({ email });
-    // if (!user)
-    //   return next({
-    //     statusCode: STATUS_CODES.NOT_FOUND,
-    //     message: "User not found",
-    //   });
-
-    // delete all previous OTPs
-    // await deleteOTPs(phone);
-
-    // const otpObj = await addOTP({
-    //   phone,
-    //   otp: generateRandomOTP(),
-    // });
-
+    // Assuming validations and user existence checks are done
     const otp = generateRandomOTP();
+
     // Send OTP via email
+    const subject = "Your OTP Code";
     const message = `Your OTP code is ${otp}. It is valid for 10 minutes.`;
-    await mailer.sendEmail(
-      EMAIL_TEMPLATES.RESET_PASSWORD, // Add an OTP template if necessary
-      message,
-      email,
-      email
-      // user.firstName + " " + user.lastName
-    );
 
-    // twilio service for sending OTP to phone number
+    await mailer.sendEmail({ email, subject, message });
 
-    generateResponse(null, "OTP verified successfully", res);
+    generateResponse(null, "OTP sent successfully", res);
   } catch (error) {
     next(new Error(error.message));
   }
 };
-
 // verify OTP
 exports.verifyOTP = async (req, res, next) => {
   const body = parseBody(req.body);
