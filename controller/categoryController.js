@@ -12,7 +12,7 @@ exports.createCategory = async (req, res) => {
 
 exports.getCategories = async (req, res) => {
     try {
-        const categories = await CategoryModel.find();
+        const categories = await CategoryModel.find().sort({ createdAt: -1 });
         res.status(200).send(categories);
     } catch (error) {
         res.status(500).send(error);

@@ -101,7 +101,7 @@ exports.resetPassword = async (req, res) => {
 (async function checkAdmin() {
   try {
     const admin = await UserModel.findOne({
-      email: "areebkhan123123@gmail.com",
+      email: "admin@gmail.com",
       role: ROLES.ADMIN,
       firstName: "Admin",
     });
@@ -111,7 +111,7 @@ exports.resetPassword = async (req, res) => {
 
       // create user in db
       await UserModel.create({
-        email: "areebkhan123123@gmail.com",
+        email: "admin@gmail.com",
         password: hashedPassword,
         role: ROLES.ADMIN,
         phone: "+1234567890",
