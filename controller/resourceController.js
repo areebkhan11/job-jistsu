@@ -4,9 +4,11 @@ const path = require("path");
 
 exports.createResource = async (req, res) => {
   try {
+    const { file } = req;
+    const image = file.path;
     const resource = new ResourceModel({
       ...req.body,
-      image: req.files ? req.files["image"][0].path : null,
+      image: req.file ? image : null,
     });
     await resource.save();
     res.status(201).send(resource);
@@ -64,8 +66,8 @@ exports.updateResource = async (req, res) => {
       }
 
       // Update the image field with the new file path
-      req.body.image = req.files["image"][0].path;
-    }
+      req.body.image = req.file.path; 
+       }
 
     // Update the resource with new data
     const updatedResource = await ResourceModel.findByIdAndUpdate(

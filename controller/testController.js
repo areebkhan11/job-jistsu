@@ -9,7 +9,8 @@ const path = require("path");
 exports.createTest = async (req, res) => {
   try {
     const { categoryId } = req.body;
-
+    const { file } = req;
+    const image = file.path;
     // Check if the category exists
     const categoryExists = await CategoryModel.findById(categoryId);
     if (!categoryExists) {
@@ -19,8 +20,8 @@ exports.createTest = async (req, res) => {
     // If category exists, proceed to create the test
     const test = new TestModel({
       ...req.body,
-      image: req.files ? req.files["image"][0].path : null,
-    });
+      image: req.file ? image : null,
+        });
     await test.save();
     res.status(201).send(test);
   } catch (error) {
@@ -73,7 +74,7 @@ exports.updateTest = async (req, res) => {
       }
 
       // Update the image field with the new file path
-      req.body.image = req.files["image"][0].path;
+      req.body.image = req.file.path; 
     }
 
     // Update the test document with new data
