@@ -152,7 +152,7 @@ exports.generateOTP = async (req, res, next) => {
 
     await mailer.sendEmail({ email, subject, message });
 
-    generateResponse(null, "OTP sent successfully", otpObj);
+    generateResponse(null, "OTP sent successfully", res);
   } catch (error) {
     next(new Error(error.message));
   }
