@@ -152,7 +152,7 @@ exports.generateOTP = async (req, res, next) => {
 
     await mailer.sendEmail({ email, subject, message });
 
-    generateResponse(null, "OTP sent successfully", res);
+    generateResponse(otpObj, "OTP sent successfully", res);
   } catch (error) {
     next(new Error(error.message));
   }
@@ -177,13 +177,13 @@ exports.verifyOTP = async (req, res, next) => {
         message: "OTP not found",
       });
 
-    if (otpObj.isExpired())
-      return next({
-        statusCode: STATUS_CODES.AUTHENTICATION_TIMEOUT,
-        message: "OTP expired",
-      });
+    // if (otpObj.isExpired())
+    //   return next({
+    //     statusCode: STATUS_CODES.AUTHENTICATION_TIMEOUT,
+    //     message: "OTP expired",
+    //   });
 
-    let user = await findUser({ phone: otpObj.phone });
+    let user = await findUser({ email: otpObj.email });
     if (!user)
       return next({
         statusCode: STATUS_CODES.NOT_FOUND,
@@ -191,19 +191,19 @@ exports.verifyOTP = async (req, res, next) => {
       });
 
     // // generate random password
-    const password = generateRandomPassword();
+    // const password = generateRandomPassword();
 
-    // // create hash of password
-    const hash = await hashPassword(password);
+    // // // create hash of password
+    // const hash = await hashPassword(password);
 
     // // update user with new password
-    user.password = hash;
-    await user.save();
+    // user.password = hash;
+    // await user.save();
 
     // twilio service for sending password to phone number
 
     generateResponse(
-      { password },
+      otpObj,
       "Newly generated password sent to your phone number.",
       res
     );
