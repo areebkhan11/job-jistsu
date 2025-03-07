@@ -2,6 +2,7 @@ const nodeMailer = require("nodemailer");
 
 class Mailer {
   static async sendEmail({ email, subject, message }) {
+    console.log(email,"<-----email")
     const transporter = nodeMailer.createTransport({
       // service: "gmail",
       host: "smtp.hostinger.com",
@@ -17,7 +18,7 @@ class Mailer {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: "areebkhan123123@gmail.com",
+      to: email,
       subject,
       text: message,
     };
