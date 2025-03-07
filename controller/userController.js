@@ -134,49 +134,29 @@ exports.generateOTP = async (req, res, next) => {
   const body = parseBody(req.body);
   const { email } = body;
 
-  // Joi validation
-  // const { error } = generateOtpValidation.validate(body);
-  // if (error)
-  //   return next({
-  //     statusCode: STATUS_CODES.UNPROCESSABLE_ENTITY,
-  //     message: error.details[0].message,
-  //   });
-
   try {
-    // const user = await findUser({ email });
-    // if (!user)
-    //   return next({
-    //     statusCode: STATUS_CODES.NOT_FOUND,
-    //     message: "User not found",
-    //   });
+    // Assuming validations and user existence checks are done
 
-    // delete all previous OTPs
-    // await deleteOTPs(phone);
-
-    // const otpObj = await addOTP({
-    //   phone,
-    //   otp: generateRandomOTP(),
-    // });
-
+    //delete all previous OTPs
+    await deleteOTPs(email);
     const otp = generateRandomOTP();
-    // Send OTP via email
-    const message = `Your OTP code is ${otp}. It is valid for 10 minutes.`;
-    await mailer.sendEmail(
-      EMAIL_TEMPLATES.RESET_PASSWORD, // Add an OTP template if necessary
-      message,
+
+    const otpObj = await addOTP({
       email,
-      email
-      // user.firstName + " " + user.lastName
-    );
+      otp,
+    });
 
-    // twilio service for sending OTP to phone number
+    // Send OTP via email
+    const subject = "Your OTP Code";
+    const message = `Your OTP code is ${otp}. It is valid for 10 minutes.`;
 
-    generateResponse(null, "OTP verified successfully", res);
+    await mailer.sendEmail({ email, subject, message });
+
+    generateResponse(otpObj, "OTP sent successfully", res);
   } catch (error) {
     next(new Error(error.message));
   }
 };
-
 // verify OTP
 exports.verifyOTP = async (req, res, next) => {
   const body = parseBody(req.body);
@@ -197,13 +177,13 @@ exports.verifyOTP = async (req, res, next) => {
         message: "OTP not found",
       });
 
-    if (otpObj.isExpired())
-      return next({
-        statusCode: STATUS_CODES.AUTHENTICATION_TIMEOUT,
-        message: "OTP expired",
-      });
+    // if (otpObj.isExpired())
+    //   return next({
+    //     statusCode: STATUS_CODES.AUTHENTICATION_TIMEOUT,
+    //     message: "OTP expired",
+    //   });
 
-    let user = await findUser({ phone: otpObj.phone });
+    let user = await findUser({ email: otpObj.email });
     if (!user)
       return next({
         statusCode: STATUS_CODES.NOT_FOUND,
@@ -211,19 +191,19 @@ exports.verifyOTP = async (req, res, next) => {
       });
 
     // // generate random password
-    const password = generateRandomPassword();
+    // const password = generateRandomPassword();
 
-    // // create hash of password
-    const hash = await hashPassword(password);
+    // // // create hash of password
+    // const hash = await hashPassword(password);
 
     // // update user with new password
-    user.password = hash;
-    await user.save();
+    // user.password = hash;
+    // await user.save();
 
     // twilio service for sending password to phone number
 
     generateResponse(
-      { password },
+      otpObj,
       "Newly generated password sent to your phone number.",
       res
     );
@@ -285,11 +265,11 @@ exports.changePassword = async (req, res, next) => {
 };
 
 exports.resetPassword = async (req, res, next) => {
-  const { newPassword, resetPasswordToken } = parseBody(req.body);
+  const { newPassword, emil } = parseBody(req.body);
   // Joi validation
   const { error } = resetPasswordValidation.validate({
     newPassword,
-    resetPasswordToken,
+    emil,
   });
   if (error)
     return next({
@@ -298,8 +278,8 @@ exports.resetPassword = async (req, res, next) => {
     });
 
   try {
-    const user = await findUser({ resetPasswordToken }).select(
-      "+password +resetPasswordToken"
+    const user = await findUser({ emil }).select(
+      "+password"
     );
     if (!user)
       return next({
@@ -323,8 +303,6 @@ exports.resetPassword = async (req, res, next) => {
     // hash new password
     const hashedPassword = await hashPassword(newPassword);
     user.password = hashedPassword;
-    user.resetPasswordToken = null;
-
     await user.save();
 
     // return response
