@@ -78,6 +78,7 @@ exports.updateRestriction = async (req, res) => {
 
     res.status(200).send(updatedRestriction);
   } catch (error) {
+    console.log(error, "<-----error")
     res.status(400).send(error);
   }
 };

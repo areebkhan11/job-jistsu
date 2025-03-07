@@ -52,7 +52,7 @@ exports.updateResource = async (req, res) => {
     }
 
     // Check if a new image is uploaded
-    if (req.files && req.files["image"]) {
+    if (req.file && req.file.image) {
       // Delete the old image if it exists
       if (resource.image) {
         const oldImagePath = path.join(
