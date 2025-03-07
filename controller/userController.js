@@ -265,11 +265,11 @@ exports.changePassword = async (req, res, next) => {
 };
 
 exports.resetPassword = async (req, res, next) => {
-  const { newPassword, resetPasswordToken } = parseBody(req.body);
+  const { newPassword, emil } = parseBody(req.body);
   // Joi validation
   const { error } = resetPasswordValidation.validate({
     newPassword,
-    resetPasswordToken,
+    emil,
   });
   if (error)
     return next({
@@ -278,8 +278,8 @@ exports.resetPassword = async (req, res, next) => {
     });
 
   try {
-    const user = await findUser({ resetPasswordToken }).select(
-      "+password +resetPasswordToken"
+    const user = await findUser({ emil }).select(
+      "+password"
     );
     if (!user)
       return next({
@@ -303,8 +303,6 @@ exports.resetPassword = async (req, res, next) => {
     // hash new password
     const hashedPassword = await hashPassword(newPassword);
     user.password = hashedPassword;
-    user.resetPasswordToken = null;
-
     await user.save();
 
     // return response

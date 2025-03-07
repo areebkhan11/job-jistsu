@@ -15,5 +15,5 @@ exports.changePasswordValidation = Joi.object({
 
 exports.resetPasswordValidation = Joi.object({
     newPassword: Joi.string().min(8).max(30).required(),
-    resetPasswordToken: Joi.string().trim().required(),
+    email: Joi.string().trim().required(),
 });

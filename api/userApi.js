@@ -17,7 +17,7 @@ class UserAPI {
         router.get('/search-selected-role', authMiddleware(Object.values(ROLES)), searchAllUsersByRole);
         router.post('/otp', generateOTP);
         router.put('/verify', verifyOTP);
-        router.put('/change-password', authMiddleware(Object.values(ROLES)), changePassword);
+        router.put('/change-password', changePassword);
         // Dashboard API
         router.put('/reset-password', resetPassword);
         router.put('/reset-link', sendResetPasswordLink);
