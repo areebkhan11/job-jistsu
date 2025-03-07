@@ -5,9 +5,11 @@ const path = require("path");
 // Create a new restriction
 exports.createRestriction = async (req, res) => {
   try {
+    const { file } = req;
+    const image = file.path;
     const restriction = new RestrictionModel({
       ...req.body,
-      image: req.files ? req.files["image"][0].path : null,
+      image: req.file ? image : null,
     });
 
     await restriction.save();
@@ -50,12 +52,12 @@ exports.updateRestriction = async (req, res) => {
     }
 
     // Check if a new image is uploaded
-    if (req.files && req.files["image"]) {
+    if (req.file && req.file.image) {
       // Delete the old image if it exists
       if (restriction.image) {
         const oldImagePath = path.join(
           __dirname,
-          "../uploads/restrictionss",
+          "../uploads/restrictions",
           restriction.image
         );
         if (fs.existsSync(oldImagePath)) {
@@ -64,7 +66,7 @@ exports.updateRestriction = async (req, res) => {
       }
 
       // Update the image field with the new file path
-      req.body.image = req.files["image"][0].path;
+      req.body.image = req.file.path;
     }
 
     // Update the restriction
