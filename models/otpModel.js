@@ -7,4 +7,4 @@ exports.addOTP = (obj) => OTPModel.create(obj);
 exports.getOTP = (query) => OTPModel.findOne(query);
 
 // delete OTPs
-exports.deleteOTPs = (phone) => OTPModel.deleteMany({ phone });
+exports.deleteOTPs = (email) => OTPModel.deleteMany({ email });

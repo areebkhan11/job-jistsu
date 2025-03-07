@@ -136,7 +136,15 @@ exports.generateOTP = async (req, res, next) => {
 
   try {
     // Assuming validations and user existence checks are done
+
+    //delete all previous OTPs
+    await deleteOTPs(email);
     const otp = generateRandomOTP();
+
+    const otpObj = await addOTP({
+      email,
+      otp,
+    });
 
     // Send OTP via email
     const subject = "Your OTP Code";
@@ -144,7 +152,7 @@ exports.generateOTP = async (req, res, next) => {
 
     await mailer.sendEmail({ email, subject, message });
 
-    generateResponse(null, "OTP sent successfully", res);
+    generateResponse(null, "OTP sent successfully", otpObj);
   } catch (error) {
     next(new Error(error.message));
   }
