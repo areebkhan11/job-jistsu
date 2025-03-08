@@ -81,7 +81,7 @@ exports.updateTest = async (req, res) => {
     // Update the test document with new data
     const updatedTest = await TestModel.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       {
         new: true,
         runValidators: true,
