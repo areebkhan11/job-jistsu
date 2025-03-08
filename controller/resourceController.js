@@ -50,9 +50,11 @@ exports.updateResource = async (req, res) => {
     if (!resource) {
       return res.status(404).send({ message: "Resource not found" });
     }
+    let updateData = { ...req.body };
+
 
     // Check if a new image is uploaded
-    if (req.file && req.file.image) {
+    if (req.file) {
       // Delete the old image if it exists
       if (resource.image) {
         const oldImagePath = path.join(
@@ -60,19 +62,20 @@ exports.updateResource = async (req, res) => {
           "../uploads/resources",
           resource.image
         );
+        console.log(oldImagePath, "<----oldImagePath")
         if (fs.existsSync(oldImagePath)) {
           fs.unlinkSync(oldImagePath);
         }
       }
 
       // Update the image field with the new file path
-      req.body.image = req.file.path; 
-       }
+      updateData.image = req.file.path;
+    }
 
     // Update the resource with new data
     const updatedResource = await ResourceModel.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     ).populate("category");
 

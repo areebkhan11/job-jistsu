@@ -58,9 +58,10 @@ exports.updateTest = async (req, res) => {
     if (!test) {
       return res.status(404).send({ message: "Test not found" });
     }
+    let updateData = { ...req.body };
 
     // Check if a new image is uploaded
-    if (req.files && req.files["image"]) {
+    if (req.file) {
       // Delete the old image if it exists
       if (test.image) {
         const oldImagePath = path.join(
@@ -74,7 +75,7 @@ exports.updateTest = async (req, res) => {
       }
 
       // Update the image field with the new file path
-      req.body.image = req.file.path; 
+      updateData.image = req.file.path;
     }
 
     // Update the test document with new data

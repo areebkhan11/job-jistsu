@@ -44,6 +44,7 @@ exports.getRestrictionById = async (req, res) => {
 
 // Update a restriction by ID
 exports.updateRestriction = async (req, res) => {
+
   try {
     const restriction = await RestrictionModel.findById(req.params.id);
 
@@ -51,8 +52,10 @@ exports.updateRestriction = async (req, res) => {
       return res.status(404).send({ message: "Restriction not found" });
     }
 
+    let updateData = { ...req.body };
+
     // Check if a new image is uploaded
-    if (req.file && req.file.image) {
+    if (req.file) {
       // Delete the old image if it exists
       if (restriction.image) {
         const oldImagePath = path.join(
@@ -65,20 +68,18 @@ exports.updateRestriction = async (req, res) => {
         }
       }
 
-      // Update the image field with the new file path
-      req.body.image = req.file.path;
+      // Update the image field with the new filename
+      updateData.image = req.file.path; // Store only filename
     }
-
     // Update the restriction
     const updatedRestriction = await RestrictionModel.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData, // Use `updateData` instead of modifying `req.body`
       { new: true, runValidators: true }
     );
 
     res.status(200).send(updatedRestriction);
   } catch (error) {
-    console.log(error, "<-----error")
     res.status(400).send(error);
   }
 };

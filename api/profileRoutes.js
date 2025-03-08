@@ -7,6 +7,7 @@ const {
 } = require('../controller/profileController');
 const authMiddleware = require('../middlewares/Auth');
 const { ROLES } = require('../utils/constants');
+const { upload } = require("../utils");
 
 
 class ProfileAPI {
@@ -18,9 +19,9 @@ class ProfileAPI {
   setupRoutes() {
     let router = this.router;
 
-    router.post('/', authMiddleware(Object.values(ROLES)), createProfile); // Create a new profile
+    router.post('/', authMiddleware(Object.values(ROLES)), upload("resources").single("image"), createProfile); // Create a new profile
     router.get('/', authMiddleware(Object.values(ROLES)), getProfile); // Get all profiles
-    router.put('/:id', authMiddleware(Object.values(ROLES)), updateProfile); // Update a profile by ID
+    router.put('/:id', authMiddleware(Object.values(ROLES)), upload("resources").single("image"), updateProfile); // Update a profile by ID
     router.delete('/:id',authMiddleware(Object.values(ROLES)), deleteProfile); // Delete a profile by ID
   }
 
