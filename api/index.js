@@ -10,6 +10,7 @@ const Profile = require('./profileRoutes')
 const Resource = require('./resourcesApi')
 const RestrictionAPI = require('./restrictionsApi')
 const FeedbackAPI = require('./feedbackApi')
+const RspirceCategoryAPI = require('./resourceCategory')
 class API {
   constructor(app) {
     this.app = app;
@@ -28,6 +29,7 @@ class API {
     this.routeGroups.push(new User);
     this.routeGroups.push(new Profile);
     this.routeGroups.push(new Resource);
+    this.routeGroups.push(new RspirceCategoryAPI);
   }
 
   setContentType(req, res, next) {

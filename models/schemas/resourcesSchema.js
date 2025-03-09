@@ -8,7 +8,7 @@ const resourceSchema = new Schema(
     description: { type: String },
     url: { type: String, required: true },
     image: { type: String, default: null },
-    category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    resource_category: { type: Schema.Types.ObjectId, ref: "ResourceCategory", required: true },
   },
   { timestamps: true }
 );
