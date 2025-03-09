@@ -9,6 +9,7 @@ const User = require('./userApi')
 const Profile = require('./profileRoutes')
 const Resource = require('./resourcesApi')
 const RestrictionAPI = require('./restrictionsApi')
+const FeedbackAPI = require('./feedbackApi')
 class API {
   constructor(app) {
     this.app = app;
@@ -18,6 +19,7 @@ class API {
 
   loadRouteGroups() {
     this.routeGroups.push(new RootAPI());
+    this.routeGroups.push(new FeedbackAPI);
     this.routeGroups.push(new RestrictionAPI)
     this.routeGroups.push(new AuthAPI());
     this.routeGroups.push(new CategoryAPI());

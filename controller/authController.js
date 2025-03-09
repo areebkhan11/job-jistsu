@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
   const { error } = validateLogin(req.body);
   if (error) return res.status(400).send({ message: error.details[0].message });
 
-  const { email, password } = req.body;
+  const { email, password, panelType } = req.body;
 
   try {
     const user = await UserModel.findOne({ email }).select("+password");
@@ -58,6 +58,15 @@ exports.login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).send({ message: "Invalid email or password" });
+    }
+
+    // Check if the user is trying to log in to the wrong panel based on their role
+    if (panelType === "admin" && user.role !== "admin") {
+      return res.status(403).send({ message: "Access denied. Admin panel is only for admin users." });
+    }
+
+    if (panelType === "user" && user.role !== "user") {
+      return res.status(403).send({ message: "Access denied. User panel is only for user accounts." });
     }
 
     // Use the generateToken utility

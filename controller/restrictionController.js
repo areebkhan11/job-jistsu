@@ -63,6 +63,8 @@ exports.updateRestriction = async (req, res) => {
           "../uploads/restrictions",
           restriction.image
         );
+        console.log(oldImagePath, "<----oldImagePath")
+
         if (fs.existsSync(oldImagePath)) {
           fs.unlinkSync(oldImagePath);
         }

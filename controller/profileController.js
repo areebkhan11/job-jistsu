@@ -50,7 +50,6 @@ exports.createProfile = async (req, res) => {
             "../uploads/resources",
             resource.image
           );
-          console.log(oldImagePath, "<----oldImagePath")
           if (fs.existsSync(oldImagePath)) {
             fs.unlinkSync(oldImagePath);
           }
