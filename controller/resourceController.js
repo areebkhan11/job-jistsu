@@ -20,7 +20,7 @@ exports.createResource = async (req, res) => {
 exports.getResources = async (req, res) => {
   try {
     const resources = await ResourceModel.find()
-      .populate("category")
+      .populate("resource_category")
       .sort({ createdAt: -1 });
     res.status(200).send(resources);
   } catch (error) {
@@ -31,7 +31,7 @@ exports.getResources = async (req, res) => {
 exports.getResourceById = async (req, res) => {
   try {
     const resource = await ResourceModel.findById(req.params.id).populate(
-      "category"
+      "resource_category"
     );
     if (!resource) {
       return res.status(404).send();
@@ -76,7 +76,7 @@ exports.updateResource = async (req, res) => {
       req.params.id,
       updateData,
       { new: true, runValidators: true }
-    ).populate("category");
+    ).populate("resource_category");
 
     res.status(200).send(updatedResource);
   } catch (error) {
