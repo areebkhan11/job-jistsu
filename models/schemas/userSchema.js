@@ -23,6 +23,18 @@ const userSchema = new Schema(
     isDeleted: { type: Boolean, default: false },
     location: { type: [Number, Number], default: [0, 0] },
     online: { type: Boolean, default: false },
+
+    // New fields
+    age: { type: Number, default: null },
+    bio: { type: String, default: null },
+    discipline: { type: String, default: null },
+    education: { type: String, default: null },
+    gender: { type: String, enum: ["male", "female", "other"], default: null },
+    goals: { type: String, default: null },
+    hobbies: { type: String, default: null },
+    isFelony: { type: String, enum: ["yes", "no"], default: "no" },
+    isVeteran: { type: String, enum: ["yes", "no"], default: "no" },
+    locationName: { type: String, default: null },
   },
   { timestamps: true, versionKey: false }
 );

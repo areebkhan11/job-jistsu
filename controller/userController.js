@@ -420,7 +420,18 @@ exports.updateSingleUser = async (req, res, next) => {
     isActive,
     shifts,
     roleType,
+    age,
+    bio,
+    discipline,
+    education,
+    gender,
+    goals,
+    hobbies,
+    isFelony,
+    isVeteran,
+    locationName,
   } = body;
+
   // Construct update object with only selected fields
   const updateFields = {};
   isActive ? (updateFields.isActive = true) : (updateFields.isActive = false);
@@ -433,35 +444,34 @@ exports.updateSingleUser = async (req, res, next) => {
   if (positionName) updateFields.positionName = positionName;
   if (shifts) updateFields.shifts = shifts;
   if (roleType) updateFields.roleType = roleType;
+  
+  // New fields
+  if (age) updateFields.age = age;
+  if (bio) updateFields.bio = bio;
+  if (discipline) updateFields.discipline = discipline;
+  if (education) updateFields.education = education;
+  if (gender) updateFields.gender = gender;
+  if (goals) updateFields.goals = goals;
+  if (hobbies) updateFields.hobbies = hobbies;
+  if (isFelony) updateFields.isFelony = isFelony;
+  if (isVeteran) updateFields.isVeteran = isVeteran;
+  if (locationName) updateFields.locationName = locationName;
 
   try {
-    // Check if user is admin or updating their own profile
-    // if (req.user.role === ROLES.ADMIN || req.user.id === userId) {
-    // const adminCount = await findUser({ role: ROLES.ADMIN }).countDocuments();
-    // if (adminCount >= 3) {
-    //     return next({
-    //         statusCode: STATUS_CODES.CONFLICT,
-    //         message: 'Maximum 3 admin are allowed'
-    //     });
-    // }
     const user = await updateUser({ _id: userId }, { $set: updateFields });
-    if (!user)
+    if (!user) {
       return next({
         statusCode: STATUS_CODES.NOT_FOUND,
         message: "User not found",
       });
+    }
 
     generateResponse(user, "User updated successfully", res);
-    // } else {
-    //     return next({
-    //         statusCode: STATUS_CODES.UNAUTHORIZED,
-    //         message: 'You are not authorized to Edit this user profile'
-    //     });
-    // }
   } catch (error) {
     next(error);
   }
 };
+
 
 exports.deleteUser = async (req, res, next) => {
   const { userId } = req.params;
