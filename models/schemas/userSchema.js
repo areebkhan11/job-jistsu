@@ -21,7 +21,7 @@ const userSchema = new Schema(
     isActive: { type: Boolean, default: true },
     shifts: { type: [String], default: null },
     isDeleted: { type: Boolean, default: false },
-    location: { type: [Number, Number], default: [0, 0] },
+    location: { type: String, default: null },
     online: { type: Boolean, default: false },
 
     // New fields
@@ -29,7 +29,7 @@ const userSchema = new Schema(
     bio: { type: String, default: null },
     discipline: { type: String, default: null },
     education: { type: String, default: null },
-    gender: { type: String, enum: ["male", "female", "other"], default: null },
+    gender: { type: String, enum: ["male", "female", "other"], default: "other" },
     goals: { type: String, default: null },
     hobbies: { type: String, default: null },
     isFelony: { type: String, enum: ["yes", "no"], default: "no" },
